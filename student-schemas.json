@@ -1,0 +1,137 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Student Schemas",
+  "description": "JSON Schemas for the Student entity, covering creation, updates, and responses.",
+  "definitions": {
+    "phoneNumber": {
+      "type": "object",
+      "properties": {
+        "ddd": {
+          "type": "integer",
+          "description": "Area code (e.g., 51 for Porto Alegre)."
+        },
+        "number": {
+          "type": "integer",
+          "description": "The phone number."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description for the number (e.g., 'Mobile', 'Home')."
+        }
+      },
+      "required": ["ddd", "number"],
+      "additionalProperties": false
+    },
+    "studentBase": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of the student."
+        },
+        "enrollment": {
+          "type": "string",
+          "description": "The student's unique enrollment ID."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The student's primary email address."
+        },
+        "course_curriculum": {
+          "type": "string",
+          "description": "The curriculum code or name the student is enrolled in."
+        },
+        "phoneNumbers": {
+          "type": "array",
+          "description": "A list of the student's phone numbers.",
+          "items": {
+            "$ref": "#/definitions/phoneNumber"
+          },
+          "default": []
+        },
+        "classes": {
+          "type": "array",
+          "description": "An array of UUIDs referencing the classes the student is enrolled in.",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "minItems": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "createStudentRequest": {
+    "title": "Create Student Request",
+    "description": "Schema for the request body when creating a new student.",
+    "allOf": [
+      { "$ref": "#/definitions/studentBase" },
+      {
+        "required": [
+          "name",
+          "enrollment",
+          "email",
+          "course_curriculum",
+          "classes"
+        ]
+      }
+    ]
+  },
+  "updateStudentRequest": {
+    "title": "Update Student Request",
+    "description": "Schema for the request body when updating an existing student. All properties are optional.",
+    "type": "object",
+    "properties": {
+      "name": { "type": "string" },
+      "enrollment": { "type": "string" },
+      "email": { "type": "string", "format": "email" },
+      "course_curriculum": { "type": "string" },
+      "phoneNumbers": {
+        "type": "array",
+        "items": { "$ref": "#/definitions/phoneNumber" }
+      },
+      "classes": {
+        "type": "array",
+        "items": { "type": "string", "format": "uuid" },
+        "minItems": 1
+      }
+    },
+    "minProperties": 1,
+    "additionalProperties": false
+  },
+  "studentResponse": {
+    "title": "Student Response",
+    "description": "Schema for the API response when returning a student object.",
+    "type": "object",
+    "properties": {
+      "_id": {
+        "type": "string",
+        "format": "uuid",
+        "description": "The unique identifier for the student."
+      },
+      "name": { "type": "string" },
+      "enrollment": { "type": "string" },
+      "email": { "type": "string", "format": "email" },
+      "course_curriculum": { "type": "string" },
+      "phoneNumbers": {
+        "type": "array",
+        "items": { "$ref": "#/definitions/phoneNumber" }
+      },
+      "classes": {
+        "type": "array",
+        "items": { "type": "string", "format": "uuid" }
+      }
+    },
+    "required": [
+      "_id",
+      "name",
+      "enrollment",
+      "email",
+      "course_curriculum",
+      "classes"
+    ],
+    "additionalProperties": false
+  }
+}
