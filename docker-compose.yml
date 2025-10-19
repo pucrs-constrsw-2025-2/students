@@ -1,0 +1,31 @@
+services:
+  # The PostgreSQL Database Service
+  db:
+    image: postgres:15
+    container_name: students-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=your_strong_password # Change this password
+      - POSTGRES_DB=students_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # The .NET API Service
+  api:
+    container_name: students-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # Exposes the container's port 8080 to the host's port 8080
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=db;Database=students_db;Username=postgres;Password=your_strong_password # Must match db password
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
