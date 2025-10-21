@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Students.Application.Interfaces;
 using Students.Application.Services;
 using Students.Domain.Interfaces;
@@ -35,17 +38,46 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Optional HTTPS redirection: enable only if explicitly configured
+var useHttpsRedirection = app.Configuration.GetValue<bool?>("UseHttpsRedirection") ?? false;
+if (useHttpsRedirection)
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-// Automatically apply database migrations on startup
+// Simple health endpoint for container health checks
+app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
+
+// Ensure database is ready: if no migrations exist, create schema from model; otherwise migrate
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<StudentContext>();
-    dbContext.Database.Migrate();
+    var hasMigrations = dbContext.Database.GetMigrations().Any();
+    if (hasMigrations)
+    {
+        dbContext.Database.Migrate();
+    }
+    else
+    {
+        var creator = dbContext.Database.GetService<IRelationalDatabaseCreator>();
+        if (!creator.Exists())
+        {
+            creator.Create();
+        }
+        try
+        {
+            // Create tables for the current model if they don't exist
+            creator.CreateTables();
+        }
+        catch
+        {
+            // Ignore if tables already exist
+        }
+    }
 }
 
 app.Run();
