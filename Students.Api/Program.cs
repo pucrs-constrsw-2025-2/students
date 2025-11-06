@@ -7,6 +7,7 @@ using Students.Application.Services;
 using Students.Domain.Interfaces;
 using Students.Infrastructure.Data;
 using Students.Infrastructure.Repositories;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,7 +46,13 @@ if (useHttpsRedirection)
     app.UseHttpsRedirection();
 }
 
+// Prometheus HTTP request metrics middleware
+app.UseHttpMetrics();
+
 app.UseAuthorization();
+
+// Expose Prometheus metrics at /actuator/prometheus
+app.MapMetrics("/actuator/prometheus");
 
 app.MapControllers();
 
