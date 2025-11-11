@@ -1,12 +1,21 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
+using Students.Api.Authentication;
 using Students.Application.Interfaces;
 using Students.Application.Services;
 using Students.Domain.Interfaces;
 using Students.Infrastructure.Data;
 using Students.Infrastructure.Repositories;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using System.Text.Json;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Students.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,10 +33,37 @@ builder.Services.AddDbContext<StudentContext>(options =>
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 
+// Register OAuth service with HttpClient
+builder.Services.AddHttpClient<IOAuthService, OAuthService>();
+
+// Configure authentication with custom OAuth handler
+builder.Services.AddAuthentication("OAuth")
+    .AddScheme<AuthenticationSchemeOptions, OAuthAuthenticationHandler>("OAuth", null);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Configure Health Checks (equivalente ao Spring Boot Actuator)
+builder.Services.AddHealthChecks()
+    .AddNpgSql(
+        builder.Configuration.GetConnectionString("DefaultConnection") ?? "",
+        name: "postgresql",
+        tags: new[] { "db", "sql", "postgresql" }
+    );
+
+// Configure OpenTelemetry
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(resource => resource
+        .AddService(serviceName: Environment.GetEnvironmentVariable("OTEL_SERVICE_NAME") ?? "students", serviceVersion: "1.0.0"))
+    .WithTracing(tracing => tracing
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddEntityFrameworkCoreInstrumentation())
+    .WithMetrics(metrics => metrics
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddPrometheusExporter());
 
 var app = builder.Build();
 
@@ -45,12 +81,36 @@ if (useHttpsRedirection)
     app.UseHttpsRedirection();
 }
 
+// Authentication must come before Authorization
+app.UseAuthentication();
 app.UseAuthorization();
+
+// Expose Prometheus metrics via OpenTelemetry
+app.UseOpenTelemetryPrometheusScrapingEndpoint();
 
 app.MapControllers();
 
-// Simple health endpoint for container health checks
-app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
+// Health check endpoint padronizado (formato compatível com Actuator)
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = async (context, report) =>
+    {
+        context.Response.ContentType = "application/json";
+        var result = JsonSerializer.Serialize(new
+        {
+            status = report.Status == HealthStatus.Healthy ? "UP" : "DOWN",
+            components = report.Entries.ToDictionary(
+                e => e.Key,
+                e => new
+                {
+                    status = e.Value.Status == HealthStatus.Healthy ? "UP" : "DOWN",
+                    details = e.Value.Description
+                }
+            )
+        });
+        await context.Response.WriteAsync(result);
+    }
+});
 
 // Ensure database is ready: if no migrations exist, create schema from model; otherwise migrate
 using (var scope = app.Services.CreateScope())
