@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Students.Application.DTOs;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Students.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/[controller]")]
     public class StudentsController : ControllerBase

@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
+using Students.Api.Authentication;
 using Students.Application.Interfaces;
 using Students.Application.Services;
 using Students.Domain.Interfaces;
@@ -13,6 +15,7 @@ using OpenTelemetry.Trace;
 using System.Text.Json;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Students.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +33,12 @@ builder.Services.AddDbContext<StudentContext>(options =>
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 
+// Register OAuth service with HttpClient
+builder.Services.AddHttpClient<IOAuthService, OAuthService>();
+
+// Configure authentication with custom OAuth handler
+builder.Services.AddAuthentication("OAuth")
+    .AddScheme<AuthenticationSchemeOptions, OAuthAuthenticationHandler>("OAuth", null);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -72,6 +81,8 @@ if (useHttpsRedirection)
     app.UseHttpsRedirection();
 }
 
+// Authentication must come before Authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
 // Expose Prometheus metrics via OpenTelemetry
