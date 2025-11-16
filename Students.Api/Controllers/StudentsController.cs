@@ -11,6 +11,7 @@ namespace Students.Api.Controllers
     [Authorize]
     [ApiController]
     [Route("api/v1/[controller]")]
+    [Authorize]
     public class StudentsController : ControllerBase
     {
         private readonly IStudentService _studentService;
