@@ -282,6 +282,19 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
+      "Students.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Students.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Students.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Students.Application.dll": {}
+        }
+      },
       "Students.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -732,6 +745,11 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "Students.Application/1.0.0": {
+      "type": "project",
+      "path": "../Students.Application/Students.Application.csproj",
+      "msbuildProject": "../Students.Application/Students.Application.csproj"
+    },
     "Students.Domain/1.0.0": {
       "type": "project",
       "path": "../Students.Domain/Students.Domain.csproj",
@@ -742,23 +760,24 @@
     "net8.0": [
       "Microsoft.EntityFrameworkCore >= 9.0.10",
       "Npgsql.EntityFrameworkCore.PostgreSQL >= 9.0.4",
+      "Students.Application >= 1.0.0",
       "Students.Domain >= 1.0.0"
     ]
   },
   "packageFolders": {
-    "/home/lucas/.nuget/packages/": {}
+    "/home/eu/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Infrastructure/Students.Infrastructure.csproj",
+      "projectUniqueName": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Infrastructure/Students.Infrastructure.csproj",
       "projectName": "Students.Infrastructure",
-      "projectPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Infrastructure/Students.Infrastructure.csproj",
-      "packagesPath": "/home/lucas/.nuget/packages/",
-      "outputPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Infrastructure/obj/",
+      "projectPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Infrastructure/Students.Infrastructure.csproj",
+      "packagesPath": "/home/eu/.nuget/packages/",
+      "outputPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Infrastructure/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/lucas/.nuget/NuGet/NuGet.Config"
+        "/home/eu/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -770,8 +789,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Domain/Students.Domain.csproj": {
-              "projectPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Domain/Students.Domain.csproj"
+            "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Application/Students.Application.csproj": {
+              "projectPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Application/Students.Application.csproj"
+            },
+            "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Domain/Students.Domain.csproj": {
+              "projectPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Domain/Students.Domain.csproj"
             }
           }
         }

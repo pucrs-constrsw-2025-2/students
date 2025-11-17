@@ -1,26 +1,45 @@
 {
   "version": 3,
   "targets": {
-    "net8.0": {}
+    "net8.0": {
+      "Students.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/Students.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Students.Domain.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "Students.Domain/1.0.0": {
+      "type": "project",
+      "path": "../Students.Domain/Students.Domain.csproj",
+      "msbuildProject": "../Students.Domain/Students.Domain.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net8.0": []
+    "net8.0": [
+      "Students.Domain >= 1.0.0"
+    ]
   },
   "packageFolders": {
-    "/home/lucas/.nuget/packages/": {}
+    "/home/eu/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Application/Students.Application.csproj",
+      "projectUniqueName": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Application/Students.Application.csproj",
       "projectName": "Students.Application",
-      "projectPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Application/Students.Application.csproj",
-      "packagesPath": "/home/lucas/.nuget/packages/",
-      "outputPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Application/obj/",
+      "projectPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Application/Students.Application.csproj",
+      "packagesPath": "/home/eu/.nuget/packages/",
+      "outputPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Application/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/lucas/.nuget/NuGet/NuGet.Config"
+        "/home/eu/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -31,7 +50,11 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Domain/Students.Domain.csproj": {
+              "projectPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Domain/Students.Domain.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

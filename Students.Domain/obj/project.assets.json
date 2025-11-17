@@ -8,19 +8,19 @@
     "net8.0": []
   },
   "packageFolders": {
-    "/home/lucas/.nuget/packages/": {}
+    "/home/eu/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Domain/Students.Domain.csproj",
+      "projectUniqueName": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Domain/Students.Domain.csproj",
       "projectName": "Students.Domain",
-      "projectPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Domain/Students.Domain.csproj",
-      "packagesPath": "/home/lucas/.nuget/packages/",
-      "outputPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Domain/obj/",
+      "projectPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Domain/Students.Domain.csproj",
+      "packagesPath": "/home/eu/.nuget/packages/",
+      "outputPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Domain/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/lucas/.nuget/NuGet/NuGet.Config"
+        "/home/eu/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"

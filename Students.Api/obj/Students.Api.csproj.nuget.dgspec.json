@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Api/Students.Api.csproj": {}
+    "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Api/Students.Api.csproj": {}
   },
   "projects": {
-    "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Api/Students.Api.csproj": {
+    "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Api/Students.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Api/Students.Api.csproj",
+        "projectUniqueName": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Api/Students.Api.csproj",
         "projectName": "Students.Api",
-        "projectPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Api/Students.Api.csproj",
-        "packagesPath": "/home/lucas/.nuget/packages/",
-        "outputPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Api/obj/",
+        "projectPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Api/Students.Api.csproj",
+        "packagesPath": "/home/eu/.nuget/packages/",
+        "outputPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Api/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/lucas/.nuget/NuGet/NuGet.Config"
+          "/home/eu/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -26,11 +26,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Application/Students.Application.csproj": {
-                "projectPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Application/Students.Application.csproj"
+              "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Application/Students.Application.csproj": {
+                "projectPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Application/Students.Application.csproj"
               },
-              "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Infrastructure/Students.Infrastructure.csproj": {
-                "projectPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Infrastructure/Students.Infrastructure.csproj"
+              "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Infrastructure/Students.Infrastructure.csproj": {
+                "projectPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Infrastructure/Students.Infrastructure.csproj"
               }
             }
           }
@@ -45,6 +45,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "AspNetCore.HealthChecks.Npgsql": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
             "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
               "target": "Package",
               "version": "[8.0.0, )"
@@ -52,6 +60,34 @@
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[8.0.21, )"
+            },
+            "Microsoft.Extensions.Diagnostics.HealthChecks": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "OpenTelemetry": {
+              "target": "Package",
+              "version": "[1.8.0, )"
+            },
+            "OpenTelemetry.Exporter.Prometheus.AspNetCore": {
+              "target": "Package",
+              "version": "[1.8.0-beta.1, )"
+            },
+            "OpenTelemetry.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[1.8.0, )"
+            },
+            "OpenTelemetry.Instrumentation.AspNetCore": {
+              "target": "Package",
+              "version": "[1.8.0-beta.1, )"
+            },
+            "OpenTelemetry.Instrumentation.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[1.0.0-beta.4, )"
+            },
+            "OpenTelemetry.Instrumentation.Http": {
+              "target": "Package",
+              "version": "[1.8.0-beta.1, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -81,17 +117,17 @@
         }
       }
     },
-    "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Application/Students.Application.csproj": {
+    "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Application/Students.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Application/Students.Application.csproj",
+        "projectUniqueName": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Application/Students.Application.csproj",
         "projectName": "Students.Application",
-        "projectPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Application/Students.Application.csproj",
-        "packagesPath": "/home/lucas/.nuget/packages/",
-        "outputPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Application/obj/",
+        "projectPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Application/Students.Application.csproj",
+        "packagesPath": "/home/eu/.nuget/packages/",
+        "outputPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Application/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/lucas/.nuget/NuGet/NuGet.Config"
+          "/home/eu/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -103,8 +139,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Domain/Students.Domain.csproj": {
-                "projectPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Domain/Students.Domain.csproj"
+              "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Domain/Students.Domain.csproj": {
+                "projectPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Domain/Students.Domain.csproj"
               }
             }
           }
@@ -138,17 +174,17 @@
         }
       }
     },
-    "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Domain/Students.Domain.csproj": {
+    "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Domain/Students.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Domain/Students.Domain.csproj",
+        "projectUniqueName": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Domain/Students.Domain.csproj",
         "projectName": "Students.Domain",
-        "projectPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Domain/Students.Domain.csproj",
-        "packagesPath": "/home/lucas/.nuget/packages/",
-        "outputPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Domain/obj/",
+        "projectPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Domain/Students.Domain.csproj",
+        "packagesPath": "/home/eu/.nuget/packages/",
+        "outputPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Domain/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/lucas/.nuget/NuGet/NuGet.Config"
+          "/home/eu/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -191,17 +227,17 @@
         }
       }
     },
-    "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Infrastructure/Students.Infrastructure.csproj": {
+    "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Infrastructure/Students.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Infrastructure/Students.Infrastructure.csproj",
+        "projectUniqueName": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Infrastructure/Students.Infrastructure.csproj",
         "projectName": "Students.Infrastructure",
-        "projectPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Infrastructure/Students.Infrastructure.csproj",
-        "packagesPath": "/home/lucas/.nuget/packages/",
-        "outputPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Infrastructure/obj/",
+        "projectPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Infrastructure/Students.Infrastructure.csproj",
+        "packagesPath": "/home/eu/.nuget/packages/",
+        "outputPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Infrastructure/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/lucas/.nuget/NuGet/NuGet.Config"
+          "/home/eu/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -213,8 +249,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Domain/Students.Domain.csproj": {
-                "projectPath": "/home/lucas/Estudos/SEM_6/CONSTRUCAO_SOFTWARE/students/Students.Domain/Students.Domain.csproj"
+              "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Application/Students.Application.csproj": {
+                "projectPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Application/Students.Application.csproj"
+              },
+              "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Domain/Students.Domain.csproj": {
+                "projectPath": "/home/eu/Documents/ConstrucaoDeSoftware/base/backend/students/Students.Domain/Students.Domain.csproj"
               }
             }
           }
