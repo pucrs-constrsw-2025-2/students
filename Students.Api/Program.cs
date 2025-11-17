@@ -26,8 +26,12 @@ builder.Services.AddControllers()
     .AddNewtonsoftJson();
 
 // Configure the database context to use PostgreSQL
-builder.Services.AddDbContext<StudentContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Skip in Testing environment - tests will register their own in-memory database
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddDbContext<StudentContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
 
 // Register application services and repositories for Dependency Injection
 builder.Services.AddScoped<IStudentService, StudentService>();
@@ -91,12 +95,16 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Configure Health Checks (equivalente ao Spring Boot Actuator)
-builder.Services.AddHealthChecks()
-    .AddNpgSql(
-        builder.Configuration.GetConnectionString("DefaultConnection") ?? "",
+var healthChecksBuilder = builder.Services.AddHealthChecks();
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (!string.IsNullOrEmpty(connectionString))
+{
+    healthChecksBuilder.AddNpgSql(
+        connectionString,
         name: "postgresql",
         tags: new[] { "db", "sql", "postgresql" }
     );
+}
 
 // Configure OpenTelemetry
 builder.Services.AddOpenTelemetry()
@@ -158,29 +166,33 @@ app.MapHealthChecks("/health", new HealthCheckOptions
 });
 
 // Ensure database is ready: if no migrations exist, create schema from model; otherwise migrate
-using (var scope = app.Services.CreateScope())
+// Skip this in Testing environment (used by integration tests with in-memory database)
+if (!app.Environment.IsEnvironment("Testing"))
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<StudentContext>();
-    var hasMigrations = dbContext.Database.GetMigrations().Any();
-    if (hasMigrations)
+    using (var scope = app.Services.CreateScope())
     {
-        dbContext.Database.Migrate();
-    }
-    else
-    {
-        var creator = dbContext.Database.GetService<IRelationalDatabaseCreator>();
-        if (!creator.Exists())
+        var dbContext = scope.ServiceProvider.GetRequiredService<StudentContext>();
+        var hasMigrations = dbContext.Database.GetMigrations().Any();
+        if (hasMigrations)
         {
-            creator.Create();
+            dbContext.Database.Migrate();
         }
-        try
+        else
         {
-            // Create tables for the current model if they don't exist
-            creator.CreateTables();
-        }
-        catch
-        {
-            // Ignore if tables already exist
+            var creator = dbContext.Database.GetService<IRelationalDatabaseCreator>();
+            if (!creator.Exists())
+            {
+                creator.Create();
+            }
+            try
+            {
+                // Create tables for the current model if they don't exist
+                creator.CreateTables();
+            }
+            catch
+            {
+                // Ignore if tables already exist
+            }
         }
     }
 }
