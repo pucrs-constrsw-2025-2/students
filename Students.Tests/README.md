@@ -69,10 +69,68 @@ dotnet test --filter "FullyQualifiedName~Integration"
 dotnet test --filter "FullyQualifiedName~StudentServiceTests"
 ```
 
-### Run Tests and Generate Coverage Report
+## Test Coverage
+
+### Quick Coverage Report
 ```bash
-dotnet test --collect:"XPlat Code Coverage"
+# Run the coverage script (recommended)
+./run-coverage.sh
 ```
+
+This will:
+1. Run all 53 tests
+2. Collect coverage data
+3. Generate HTML report
+4. Display summary in terminal
+5. Check against 80% threshold
+
+### Manual Coverage Commands
+```bash
+# Run tests with coverage collection
+dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+
+# Generate HTML report from coverage data
+reportgenerator \
+    -reports:"TestResults/coverage.cobertura.xml" \
+    -targetdir:"TestResults/coverage-report" \
+    -reporttypes:"Html;TextSummary"
+
+# Open report in browser
+xdg-open TestResults/coverage-report/index.html
+```
+
+### Coverage Configuration
+
+Coverage settings are configured in `Students.Tests.csproj`:
+
+- **Output Formats**: Cobertura, OpenCover, LCOV
+- **Exclusions**:
+  - Test files (`[*.Tests]*`)
+  - Program.cs files
+  - Database migrations
+  - Auto-generated code
+- **Threshold**: 80% line coverage (warning only, doesn't fail build)
+
+### View Coverage Report
+
+After running `./run-coverage.sh`, open the HTML report:
+
+```bash
+# Linux
+xdg-open TestResults/coverage-report/index.html
+
+# macOS
+open TestResults/coverage-report/index.html
+
+# Windows
+start TestResults/coverage-report/index.html
+```
+
+The report includes:
+- Overall line and branch coverage percentages
+- Per-class and per-method coverage details
+- Uncovered lines highlighted
+- Coverage trends (if run multiple times)
 
 ## Test Dependencies
 
@@ -159,16 +217,17 @@ public async Task AddAsync_ShouldAddStudentToDatabase()
 
 ## Test Metrics
 
-- **Total Tests**: 55
-- **Passing**: 43
-- **Skipped**: 12 (controller tests requiring real authentication)
+- **Total Tests**: 53
+- **Passing**: 53 ✅
+- **Skipped**: 0
+- **Failed**: 0
 - **Execution Time**: ~1 second
-- **Coverage**: All service methods and repository operations
+- **Code Coverage**: Run `./run-coverage.sh` to see detailed coverage metrics
 
 ## Continuous Improvement
 
 Future test enhancements:
-- [ ] Add code coverage reporting with threshold enforcement
+- [x] Add code coverage reporting with threshold enforcement
 - [ ] Add performance tests for bulk operations
-- [ ] Add E2E tests with real Keycloak instance
 - [ ] Add mutation testing to verify test quality
+- [ ] Integrate coverage badges in README
