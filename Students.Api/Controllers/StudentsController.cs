@@ -37,7 +37,10 @@ namespace Students.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllStudents([FromQuery] string name, [FromQuery] string enrollment, [FromQuery] string email)
+        public async Task<IActionResult> GetAllStudents(
+            [FromQuery] string? name = null,
+            [FromQuery] string? enrollment = null,
+            [FromQuery] string? email = null)
         {
             var students = await _studentService.GetAllStudentsAsync(name, enrollment, email);
             return Ok(students);
