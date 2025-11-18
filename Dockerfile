@@ -24,9 +24,12 @@ RUN dotnet publish "Students.Api.csproj" -c Release -o /app/publish /p:UseAppHos
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 
-# Install curl for healthcheck
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+# Install curl, unzip, procps and vsdbg for healthcheck and debugging
+RUN apt-get update && apt-get install -y --no-install-recommends curl unzip procps && \
+    rm -rf /var/lib/apt/lists/*
+RUN curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg
 
 COPY --from=publish /app/publish .
 EXPOSE 8080
+EXPOSE 4022
 ENTRYPOINT ["dotnet", "Students.Api.dll"]
