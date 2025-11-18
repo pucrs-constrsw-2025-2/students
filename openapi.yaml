@@ -1,0 +1,323 @@
+openapi: 3.1.0
+info:
+  title: ConstrSW - Students API
+  description: API para gerenciamento de estudantes
+  version: 1.0.0
+servers:
+  - url: http://localhost:8189
+    description: Servidor de desenvolvimento (externo)
+  - url: http://students:8080
+    description: Servidor interno (Docker)
+
+tags:
+  - name: Students
+    description: Gerenciamento de estudantes
+
+paths:
+  /api/v1/students:
+    post:
+      tags:
+        - Students
+      summary: Criar um novo estudante
+      operationId: createStudent
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStudentRequest'
+      responses:
+        '201':
+          description: Estudante criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    get:
+      tags:
+        - Students
+      summary: Listar todos os estudantes
+      operationId: getAllStudents
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+        - name: enrollment
+          in: query
+          schema:
+            type: string
+        - name: email
+          in: query
+          schema:
+            type: string
+            format: email
+      responses:
+        '200':
+          description: Lista de estudantes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/students/{id}:
+    get:
+      tags:
+        - Students
+      summary: Buscar estudante por ID
+      operationId: getStudentById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Dados do estudante
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags:
+        - Students
+      summary: Atualizar estudante (completo)
+      operationId: updateStudent
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStudentRequest'
+      responses:
+        '204':
+          description: Estudante atualizado
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      tags:
+        - Students
+      summary: Atualizar estudante (parcial)
+      operationId: patchStudent
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  op:
+                    type: string
+                  path:
+                    type: string
+                  value:
+                    type: string
+      responses:
+        '204':
+          description: Estudante atualizado
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Students
+      summary: Deletar estudante
+      operationId: deleteStudent
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Estudante deletado
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Serviço está funcionando
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    BadRequest:
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Não autorizado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Recurso não encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    CreateStudentRequest:
+      type: object
+      required:
+        - name
+        - enrollment
+        - email
+      properties:
+        name:
+          type: string
+        enrollment:
+          type: string
+        email:
+          type: string
+          format: email
+        course_curriculum:
+          type: string
+        phoneNumbers:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneNumber'
+        classes:
+          type: array
+          items:
+            type: string
+            format: uuid
+
+    UpdateStudentRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        enrollment:
+          type: string
+        email:
+          type: string
+          format: email
+        course_curriculum:
+          type: string
+        phoneNumbers:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneNumber'
+        classes:
+          type: array
+          items:
+            type: string
+            format: uuid
+
+    StudentResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        enrollment:
+          type: string
+        email:
+          type: string
+          format: email
+        course_curriculum:
+          type: string
+        phoneNumbers:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneNumber'
+        classes:
+          type: array
+          items:
+            type: string
+            format: uuid
+
+    PhoneNumber:
+      type: object
+      required:
+        - ddd
+        - number
+      properties:
+        ddd:
+          type: integer
+        number:
+          type: integer
+        description:
+          type: string
+
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+

@@ -121,11 +121,39 @@ builder.Services.AddOpenTelemetry()
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Verificar se o Swagger deve ser habilitado via variável de ambiente
+// Isso garante compatibilidade com o docker-compose que expõe ENABLE_SWAGGER
+bool enableSwagger = false;
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    // Primeiro tenta pela configuração normal (appsettings ou providers já carregados)
+    var cfgVal = app.Configuration.GetValue<bool?>("EnableSwagger");
+    if (cfgVal.HasValue)
+    {
+        enableSwagger = cfgVal.Value;
+    }
+    else
+    {
+        // Tenta também pela variável de ambiente em maiúsculas com underscore
+        var envVal = Environment.GetEnvironmentVariable("ENABLE_SWAGGER") ?? app.Configuration["ENABLE_SWAGGER"];
+        if (!string.IsNullOrEmpty(envVal) && bool.TryParse(envVal, out var parsed))
+        {
+            enableSwagger = parsed;
+        }
+    }
+}
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment() || enableSwagger)
+{
+    app.UseSwagger(c =>
+    {
+        c.RouteTemplate = "api/v1/swagger/{documentName}/swagger.json";
+    });
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/api/v1/swagger/v1/swagger.json", "Students API v1");
+        c.RoutePrefix = "api/v1/docs";
+    });
 }
 
 // Optional HTTPS redirection: enable only if explicitly configured
