@@ -18,9 +18,12 @@ namespace Students.Infrastructure.Services
             _httpClient = httpClient;
             
             // Read OAuth configuration from environment variables or appsettings
-            var protocol = configuration["OAuth:Protocol"] ?? "http";
-            var host = configuration["OAuth:Host"] ?? "oauth";
-            var port = configuration["OAuth:Port"] ?? "8080";
+            var protocol = Environment.GetEnvironmentVariable("OAUTH_INTERNAL_PROTOCOL") 
+                ?? configuration["OAuth:Protocol"] ?? "http";
+            var host = Environment.GetEnvironmentVariable("OAUTH_INTERNAL_HOST") 
+                ?? configuration["OAuth:Host"] ?? "oauth";
+            var port = Environment.GetEnvironmentVariable("OAUTH_INTERNAL_API_PORT") 
+                ?? configuration["OAuth:Port"] ?? "8000";
             
             _oauthBaseUrl = $"{protocol}://{host}:{port}";
         }
@@ -35,8 +38,8 @@ namespace Students.Infrastructure.Services
                     token = token.Substring(7);
                 }
 
-                // Call OAuth Gateway's /me endpoint to validate the token
-                var request = new HttpRequestMessage(HttpMethod.Get, $"{_oauthBaseUrl}/me");
+                // Call OAuth Gateway's /api/v1/validate endpoint to validate the token
+                var request = new HttpRequestMessage(HttpMethod.Post, $"{_oauthBaseUrl}/api/v1/validate");
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                 var response = await _httpClient.SendAsync(request);
@@ -47,22 +50,29 @@ namespace Students.Infrastructure.Services
                 }
 
                 var content = await response.Content.ReadAsStringAsync();
-                var userInfo = JsonSerializer.Deserialize<OAuthUserResponse>(content, new JsonSerializerOptions
+                var validateResponse = JsonSerializer.Deserialize<ValidateResponse>(content, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
 
-                if (userInfo == null)
+                if (validateResponse == null || !validateResponse.Active)
                 {
                     return null;
                 }
 
+                // Extract user information from the validate response
+                var roles = new List<string>();
+                if (validateResponse.RealmAccess != null && validateResponse.RealmAccess.Roles != null)
+                {
+                    roles.AddRange(validateResponse.RealmAccess.Roles);
+                }
+                
                 return new AuthenticatedUser
                 {
-                    Id = userInfo.Sub ?? string.Empty,
-                    Username = userInfo.PreferredUsername ?? string.Empty,
-                    Email = userInfo.Email ?? string.Empty,
-                    Roles = userInfo.RealmAccess?.Roles ?? new List<string>()
+                    Id = validateResponse.Sub ?? string.Empty,
+                    Username = validateResponse.Username ?? validateResponse.PreferredUsername ?? string.Empty,
+                    Email = validateResponse.Email ?? string.Empty,
+                    Roles = roles
                 };
             }
             catch (Exception)
@@ -72,10 +82,12 @@ namespace Students.Infrastructure.Services
             }
         }
 
-        // Internal classes to deserialize OAuth Gateway response
-        private class OAuthUserResponse
+        // Internal classes to deserialize OAuth Gateway validate response
+        private class ValidateResponse
         {
+            public bool Active { get; set; }
             public string? Sub { get; set; }
+            public string? Username { get; set; }
             public string? PreferredUsername { get; set; }
             public string? Email { get; set; }
             public RealmAccessInfo? RealmAccess { get; set; }
@@ -83,7 +95,7 @@ namespace Students.Infrastructure.Services
 
         private class RealmAccessInfo
         {
-            public List<string> Roles { get; set; } = new();
+            public List<string>? Roles { get; set; }
         }
     }
 }

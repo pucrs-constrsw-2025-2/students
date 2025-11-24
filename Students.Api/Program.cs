@@ -13,8 +13,7 @@ using OpenTelemetry.Trace;
 using System.Text.Json;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,29 +36,12 @@ if (!builder.Environment.IsEnvironment("Testing"))
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 
-// Configure JWT Authentication
-var keycloakUrl = Environment.GetEnvironmentVariable("KEYCLOAK_SERVER_URL") ?? "http://keycloak:8080";
-var realm = Environment.GetEnvironmentVariable("KEYCLOAK_REALM") ?? "constrsw";
-var audience = Environment.GetEnvironmentVariable("KEYCLOAK_CLIENT_ID") ?? "oauth";
+// Configure OAuth Gateway Authentication
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<Students.Application.Interfaces.IOAuthService, Students.Infrastructure.Services.OAuthService>();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.Authority = $"{keycloakUrl}/realms/{realm}";
-        options.Audience = audience;
-        options.RequireHttpsMetadata = false;
-        
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = $"{keycloakUrl}/realms/{realm}",
-            ValidAudience = audience,
-            ClockSkew = TimeSpan.Zero
-        };
-    });
+builder.Services.AddAuthentication("OAuth")
+    .AddScheme<AuthenticationSchemeOptions, Students.Api.Authentication.OAuthAuthenticationHandler>("OAuth", options => { });
 
 builder.Services.AddAuthorization();
 
