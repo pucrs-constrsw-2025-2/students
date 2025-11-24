@@ -167,12 +167,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // Expose Prometheus metrics via OpenTelemetry
-app.UseOpenTelemetryPrometheusScrapingEndpoint();
+app.UseOpenTelemetryPrometheusScrapingEndpoint("/api/v1/metrics");
 
 app.MapControllers();
 
 // Health check endpoint padronizado (formato compatível com Actuator)
-app.MapHealthChecks("/health", new HealthCheckOptions
+app.MapHealthChecks("/api/v1/health", new HealthCheckOptions
 {
     ResponseWriter = async (context, report) =>
     {
