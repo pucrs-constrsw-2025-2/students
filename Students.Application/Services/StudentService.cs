@@ -85,6 +85,100 @@ namespace Students.Application.Services
             await _studentRepository.DeleteAsync(id);
         }
 
+        // Phone Numbers methods
+        public async Task<PhoneNumberDto> AddPhoneNumberAsync(Guid studentId, PhoneNumberDto phoneNumber)
+        {
+            var student = await _studentRepository.GetByIdAsync(studentId);
+            if (student == null)
+                throw new KeyNotFoundException($"Student with ID {studentId} not found");
+
+            var phoneNumberEntity = new PhoneNumber
+            {
+                Ddd = phoneNumber.Ddd,
+                Number = phoneNumber.Number,
+                Description = phoneNumber.Description
+            };
+
+            student.PhoneNumbers.Add(phoneNumberEntity);
+            await _studentRepository.UpdateAsync(student);
+
+            return new PhoneNumberDto
+            {
+                Ddd = phoneNumberEntity.Ddd,
+                Number = phoneNumberEntity.Number,
+                Description = phoneNumberEntity.Description
+            };
+        }
+
+        public async Task<IEnumerable<PhoneNumberDto>> GetPhoneNumbersAsync(Guid studentId)
+        {
+            var student = await _studentRepository.GetByIdAsync(studentId);
+            if (student == null)
+                throw new KeyNotFoundException($"Student with ID {studentId} not found");
+
+            return student.PhoneNumbers.Select(p => new PhoneNumberDto
+            {
+                Ddd = p.Ddd,
+                Number = p.Number,
+                Description = p.Description
+            });
+        }
+
+        public async Task<PhoneNumberDto> GetPhoneNumberAsync(Guid studentId, int phoneNumberIndex)
+        {
+            var student = await _studentRepository.GetByIdAsync(studentId);
+            if (student == null)
+                throw new KeyNotFoundException($"Student with ID {studentId} not found");
+
+            if (phoneNumberIndex < 0 || phoneNumberIndex >= student.PhoneNumbers.Count)
+                throw new ArgumentOutOfRangeException(nameof(phoneNumberIndex), $"Phone number index {phoneNumberIndex} is out of range");
+
+            var phoneNumber = student.PhoneNumbers[phoneNumberIndex];
+            return new PhoneNumberDto
+            {
+                Ddd = phoneNumber.Ddd,
+                Number = phoneNumber.Number,
+                Description = phoneNumber.Description
+            };
+        }
+
+        public async Task<PhoneNumberDto> UpdatePhoneNumberAsync(Guid studentId, int phoneNumberIndex, PhoneNumberDto phoneNumber)
+        {
+            var student = await _studentRepository.GetByIdAsync(studentId);
+            if (student == null)
+                throw new KeyNotFoundException($"Student with ID {studentId} not found");
+
+            if (phoneNumberIndex < 0 || phoneNumberIndex >= student.PhoneNumbers.Count)
+                throw new ArgumentOutOfRangeException(nameof(phoneNumberIndex), $"Phone number index {phoneNumberIndex} is out of range");
+
+            var phoneNumberEntity = student.PhoneNumbers[phoneNumberIndex];
+            phoneNumberEntity.Ddd = phoneNumber.Ddd;
+            phoneNumberEntity.Number = phoneNumber.Number;
+            phoneNumberEntity.Description = phoneNumber.Description;
+
+            await _studentRepository.UpdateAsync(student);
+
+            return new PhoneNumberDto
+            {
+                Ddd = phoneNumberEntity.Ddd,
+                Number = phoneNumberEntity.Number,
+                Description = phoneNumberEntity.Description
+            };
+        }
+
+        public async Task DeletePhoneNumberAsync(Guid studentId, int phoneNumberIndex)
+        {
+            var student = await _studentRepository.GetByIdAsync(studentId);
+            if (student == null)
+                throw new KeyNotFoundException($"Student with ID {studentId} not found");
+
+            if (phoneNumberIndex < 0 || phoneNumberIndex >= student.PhoneNumbers.Count)
+                throw new ArgumentOutOfRangeException(nameof(phoneNumberIndex), $"Phone number index {phoneNumberIndex} is out of range");
+
+            student.PhoneNumbers.RemoveAt(phoneNumberIndex);
+            await _studentRepository.UpdateAsync(student);
+        }
+
         private StudentDto ToDto(Student student)
         {
             return new StudentDto

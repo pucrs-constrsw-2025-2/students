@@ -12,6 +12,8 @@ servers:
 tags:
   - name: Students
     description: Gerenciamento de estudantes
+  - name: PhoneNumbers
+    description: Gerenciamento de telefones de estudantes
 
 paths:
   /api/v1/students:
@@ -73,7 +75,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/students/{id}:
+  /api/v1/students/{studentId}:
     get:
       tags:
         - Students
@@ -82,7 +84,7 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: id
+        - name: studentId
           in: path
           required: true
           schema:
@@ -108,7 +110,7 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: id
+        - name: studentId
           in: path
           required: true
           schema:
@@ -138,7 +140,7 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: id
+        - name: studentId
           in: path
           required: true
           schema:
@@ -177,7 +179,7 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: id
+        - name: studentId
           in: path
           required: true
           schema:
@@ -191,7 +193,211 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /health:
+  /api/v1/students/{studentId}/phone-numbers:
+    post:
+      tags:
+        - PhoneNumbers
+      summary: Adicionar telefone a um estudante
+      operationId: addPhoneNumber
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneNumber'
+      responses:
+        '201':
+          description: Telefone adicionado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhoneNumber'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    get:
+      tags:
+        - PhoneNumbers
+      summary: Listar telefones de um estudante
+      operationId: getPhoneNumbers
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Lista de telefones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PhoneNumber'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/students/{studentId}/phone-numbers/{phoneNumberId}:
+    get:
+      tags:
+        - PhoneNumbers
+      summary: Buscar telefone específico por índice
+      operationId: getPhoneNumber
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: phoneNumberId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Dados do telefone
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhoneNumber'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags:
+        - PhoneNumbers
+      summary: Atualizar telefone (completo)
+      operationId: updatePhoneNumber
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: phoneNumberId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneNumber'
+      responses:
+        '200':
+          description: Telefone atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhoneNumber'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      tags:
+        - PhoneNumbers
+      summary: Atualizar telefone (parcial)
+      operationId: patchPhoneNumber
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: phoneNumberId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneNumber'
+      responses:
+        '200':
+          description: Telefone atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhoneNumber'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - PhoneNumbers
+      summary: Deletar telefone
+      operationId: deletePhoneNumber
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: phoneNumberId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Telefone deletado
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/health:
     get:
       tags:
         - Health
@@ -200,6 +406,20 @@ paths:
       responses:
         '200':
           description: Serviço está funcionando
+
+  /api/v1/metrics:
+    get:
+      tags:
+        - Metrics
+      summary: Métricas Prometheus
+      operationId: getMetrics
+      responses:
+        '200':
+          description: Métricas em formato Prometheus
+          content:
+            text/plain:
+              schema:
+                type: string
 
 components:
   securitySchemes:
